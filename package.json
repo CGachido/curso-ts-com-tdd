@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/CGachido/curso-ts-com-tdd/issues"
   },
-  "homepage": "https://github.com/CGachido/curso-ts-com-tdd#readme"
+  "homepage": "https://github.com/CGachido/curso-ts-com-tdd#readme",
+  "devDependencies": {
+    "git-commit-msg-linter": "^3.0.0"
+  }
 }
