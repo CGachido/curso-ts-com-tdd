@@ -1,13 +1,18 @@
 import { SignUpController } from './signup'
 import { MissingParamError, ServerError } from '../../errors'
-import { AccountModel, AddAccount, AddAccountModel, Validation } from './signup-protocols'
+import {
+  AccountModel,
+  AddAccount,
+  AddAccountModel,
+  Validation
+} from './signup-protocols'
 import { HttpRequest } from '../../protocols'
-import { ok, serverError, badRequest } from '../../helpers/http-helper'
+import { ok, serverError, badRequest } from '../../helpers/http/http-helper'
 
 const makeAddAccount = (): AddAccount => {
   class AddAccountStub implements AddAccount {
     async add (account: AddAccountModel): Promise<AccountModel> {
-      return new Promise(resolve => resolve(makeFakeAccount()))
+      return new Promise((resolve) => resolve(makeFakeAccount()))
     }
   }
 
@@ -52,7 +57,9 @@ const makeSut = (): SutTypes => {
 
   const sut = new SignUpController(addAccountStub, validationStub)
   return {
-    sut, addAccountStub, validationStub
+    sut,
+    addAccountStub,
+    validationStub
   }
 }
 
@@ -63,7 +70,7 @@ describe('SignUp', () => {
       return new Promise((resolve, reject) => reject(new Error()))
     })
     const httpResponse = await sut.handle(makeFakeRequest())
-    expect(httpResponse).toEqual(serverError((new ServerError(null))))
+    expect(httpResponse).toEqual(serverError(new ServerError(null)))
   })
 
   test('Should call AddAccount with correct values', async () => {
@@ -96,9 +103,13 @@ describe('SignUp', () => {
 
   test('Should return 400 if Validation returns an error', async () => {
     const { sut, validationStub } = makeSut()
-    jest.spyOn(validationStub, 'validate').mockReturnValueOnce(new MissingParamError('any_field'))
+    jest
+      .spyOn(validationStub, 'validate')
+      .mockReturnValueOnce(new MissingParamError('any_field'))
     const httpResponse = await sut.handle(makeFakeRequest())
 
-    expect(httpResponse).toEqual(badRequest(new MissingParamError('any_field')))
+    expect(httpResponse).toEqual(
+      badRequest(new MissingParamError('any_field'))
+    )
   })
 })
