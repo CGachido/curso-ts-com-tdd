@@ -14,7 +14,7 @@ services:
     restart: always
     image: clean-node-api
     command: npm start
-    volumnes:
+    volumes:
       - ./dist:/usr/src/clean-node-api/dist
     ports:
       - "5050:5050"
