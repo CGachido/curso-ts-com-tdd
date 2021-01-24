@@ -25,7 +25,7 @@ describe('Survey Routes', () => {
   })
 
   describe('POST /surveys', () => {
-    test('Should return 403 on add survey without access token', async () => {
+    test('Should return 403 on add survey without accessToken', async () => {
       await request(app)
         .post('/api/surveys')
         .send({
@@ -40,7 +40,7 @@ describe('Survey Routes', () => {
         .expect(403)
     })
 
-    test('Should return 204 on add survey with valid token', async () => {
+    test('Should return 204 on add survey with valid accessToken', async () => {
       const res = await accountCollection.insertOne({
         name: 'Cassius Souza',
         email: 'cassius.sanches@gmail.com',
@@ -72,10 +72,40 @@ describe('Survey Routes', () => {
   })
 
   describe('GET /surveys', () => {
-    test('Should return 403 on add survey without access token', async () => {
+    test('Should return 403 on add survey without access accessToken', async () => {
       await request(app)
         .get('/api/surveys')
         .expect(403)
+    })
+
+    test('Should return 200 on load surveys with valid accessToken', async () => {
+      const res = await accountCollection.insertOne({
+        name: 'Cassius Souza',
+        email: 'cassius.sanches@gmail.com',
+        password: '123'
+      })
+
+      const id = res.ops[0]._id
+      const accessToken = sign({ id }, env.jwtSecret)
+      await accountCollection.updateOne({ _id: id }, {
+        $set: {
+          accessToken
+        }
+      })
+
+      await surveyCollection.insertMany([{
+        question: 'any_question',
+        answers: [
+          { image: 'any_image', answer: 'any_answer' },
+          { answer: 'other_answer' }
+        ],
+        date: new Date()
+      }])
+
+      await request(app)
+        .get('/api/surveys')
+        .set('x-access-token', accessToken)
+        .expect(200)
     })
   })
 })
