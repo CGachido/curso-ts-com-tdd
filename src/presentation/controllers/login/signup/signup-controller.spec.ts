@@ -63,7 +63,7 @@ describe('SignUp', () => {
   test('Should return 403 if add returns null', async () => {
     const { sut, addAccountStub } = makeSut()
     jest.spyOn(addAccountStub, 'add').mockReturnValueOnce(
-      new Promise(resolve => resolve(null))
+      Promise.resolve(null)
     )
     const httpResponse = await sut.handle(makeFakeRequest())
 
