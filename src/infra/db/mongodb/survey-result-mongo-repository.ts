@@ -21,6 +21,7 @@ export class SurveyResultMongoRepository implements SaveSurveyResultRepository, 
   }
 
   async loadBySurveyId (surveyId: string, accountId: string): Promise<LoadSurveyResultRepository.Result> {
+    console.log(2, surveyId, accountId)
     const surveyResultCollection = await MongoHelper.getCollection('surveyResults')
 
     const query = new QueryBuilder()
